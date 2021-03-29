@@ -17,8 +17,10 @@ routes=pd.read_csv('routes.csv')
 #Change the column names
 routes.columns=cols
 
-print(routes.head())
-
+routes_new = pd.read_csv('routes.txt', delim_whitespace=True,names=['sourceID','Airline','destinationID','cost'])
+airports=pd.read_csv('airports.txt',delim_whitespace=True,names=['id','name','city','country','iata','icao','longitude','latitude','altitude','GMT','daylight','Timezone'])
+print(airports.head())
+print(routes_new.head())
 
 
 
