@@ -1,51 +1,50 @@
-# Adjacency Matrix representation in Python
+# Kruskal's algorithm in Python
 
 
-class Graph(object):
+class Graph:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = []
 
-    # Initialize the matrix
-    def __init__(self, size):
-        self.adjMatrix = []
-        for i in range(size):
-            self.adjMatrix.append([0 for i in range(size)])
-        self.size = size
+    def add_edge(self, u, v, w):
+        self.graph.append([u, v, w])
 
-    # Add edges
-    def add_edge(self, v1, v2):
-        if v1 == v2:
-            print("Same vertex %d and %d" % (v1, v2))
-        self.adjMatrix[v1][v2] = 1
-        self.adjMatrix[v2][v1] = 1
+    # Search function
 
-    # Remove edges
-    def remove_edge(self, v1, v2):
-        if self.adjMatrix[v1][v2] == 0:
-            print("No edge between %d and %d" % (v1, v2))
-            return
-        self.adjMatrix[v1][v2] = 0
-        self.adjMatrix[v2][v1] = 0
+    def find(self, parent, i):
+        if parent[i] == i:
+            return i
+        return self.find(parent, parent[i])
 
-    def __len__(self):
-        return self.size
+    def apply_union(self, parent, rank, x, y):
+        xroot = self.find(parent, x)
+        yroot = self.find(parent, y)
+        if rank[xroot] < rank[yroot]:
+            parent[xroot] = yroot
+        elif rank[xroot] > rank[yroot]:
+            parent[yroot] = xroot
+        else:
+            parent[yroot] = xroot
+            rank[xroot] += 1
 
-    # Print the matrix
-    def print_matrix(self):
-        for row in self.adjMatrix:
-            for val in row:
-                print('{:4}'.format(val)),
-            print
-
-
-def main():
-    g = Graph(5)
-    g.add_edge(0, 1)
-    g.add_edge(0, 2)
-    g.add_edge(1, 2)
-    g.add_edge(2, 0)
-    g.add_edge(2, 3)
-
-    g.print_matrix()
-
-
-if __name__ == '__main__':
-    main()
+    #  Applying Kruskal algorithm
+    def kruskal_algo(self):
+        result = []
+        i, e = 0, 0
+        self.graph = sorted(self.graph, key=lambda item: item[2])
+        parent = []
+        rank = []
+        for node in range(self.V):
+            parent.append(node)
+            rank.append(0)
+        while e < self.V - 1:
+            u, v, w = self.graph[i]
+            i = i + 1
+            x = self.find(parent, u)
+            y = self.find(parent, v)
+            if x != y:
+                e = e + 1
+                result.append([u, v, w])
+                self.apply_union(parent, rank, x, y)
+        for u, v, weight in result:
+            print("%d - %d: %d" % (u, v, weight))
